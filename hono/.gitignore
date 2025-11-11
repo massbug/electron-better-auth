@@ -1,0 +1,10 @@
+# deps
+node_modules/
+
+# prisma
+src/generated
+prisma/dev.db
+
+# env
+.env*
+!.env.example
