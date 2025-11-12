@@ -2,6 +2,7 @@ import type { PrismaClient } from './generated/prisma/client.js'
 import { serve } from '@hono/node-server'
 import { Scalar } from '@scalar/hono-api-reference'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { auth } from './lib/auth.js'
 
 interface ContextWithPrisma {
@@ -11,6 +12,18 @@ interface ContextWithPrisma {
 }
 
 const app = new Hono<ContextWithPrisma>()
+
+app.use(
+  '/api/auth/*',
+  cors({
+    origin: ['http://localhost:5173'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 600,
+    credentials: true,
+  }),
+)
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')
