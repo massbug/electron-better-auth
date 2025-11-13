@@ -1,68 +1,90 @@
-# template-electron-trpc
+# electron-better-auth
 
-A desktop application development template based on Electron + tRPC + React.
+This project implements GitHub OAuth authentication in Electron using Better Auth.
 
-## Branches
+## Quick Start
 
-### Main Branch
+### 1. Install Hono Backend Dependencies
 
-This branch provides the basic Electron + tRPC + React setup.
-
-### Hono + Prisma + Better Auth Integration
-
-If you want to use Electron with Hono + Prisma + Better Auth integration, you can switch to the `feat/hono-prisma-better-auth` branch:
+First, navigate to the `hono` directory, install dependencies, and configure environment variables:
 
 ```sh
-git checkout feat/hono-prisma-better-auth
+cd hono
+bun install
+cp .env.example .env
 ```
 
-Then check the `hono/README.md` file for setup and usage instructions.
+Then configure the environment variables in the `.env` file as needed (including `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`, etc.).
 
-## Usage
+### 2. Start Hono Backend Service
 
-### Adding Routers
+Run in the `hono` directory:
 
-You can add routers in `electron/trpc/routers/_app.ts`:
+```sh
+bun run dev
+```
+
+The backend service runs on `http://localhost:3000` by default (modify according to your actual setup).
+
+### 3. Install Electron App Dependencies
+
+Run in the project root directory:
+
+```sh
+bun install
+```
+
+### 4. Run Electron App
+
+#### Development Mode
+
+```sh
+bun run dev
+```
+
+#### Production Mode
+
+```sh
+bun run build
+```
+
+After the build completes, open the generated executable file.
+
+## GitHub OAuth Configuration
+
+### Development Environment Configuration
+
+Configure in your GitHub OAuth application settings:
+
+1. **Homepage URL**: `http://localhost:3000` (modify according to your actual Hono service setup)
+2. **Authorization callback URL**: `http://localhost:5173` (modify according to your actual Electron dev server setup)
+
+### Production Environment Configuration
+
+Configure in your GitHub OAuth application settings:
+
+1. **Homepage URL**: Your actual Hono backend service URL (e.g., `https://your-api-domain.com`)
+2. **Authorization callback URL**: `{custom-protocol}://index.html` or other format as needed
+   - Example: If your custom protocol is `myapp`, use `myapp://index.html`
+
+### Custom Protocol Configuration
+
+The custom protocol must be consistent in the following two files:
+
+1. **`src/constants/protocol.ts`** (Electron main app)
+2. **`hono/src/constants/protocol.ts`** (Hono backend service)
+
+Modify the `PROTOCOL` constant value in both files, for example:
 
 ```typescript
-export const appRouter = createTRPCRouter({
-  // Add your routers here
-})
+export const PROTOCOL = 'your-custom-protocol'
 ```
 
-### Adding Context
+**Important Notes:**
+- The protocol values in both files must be consistent
+- The protocol value should conform to URL scheme specifications (lowercase letters, numbers, hyphens)
+- You need to rebuild the Electron app after making changes for them to take effect
 
-You can add context in `electron/trpc/init.ts`:
+## More Information
 
-```typescript
-export const createTRPCContext = cache(async () => {
-  return {
-    // Add your context properties here
-  }
-})
-```
-
-### Using Context in Protected Procedures
-
-You can use context in `protectedProcedure` for authentication and authorization checks:
-
-```typescript
-import { TRPCError } from '@trpc/server'
-
-export const protectedProcedure = t.procedure.use(async (
-  opts,
-) => {
-  const { ctx } = opts
-
-  // Example: Check if user is authenticated
-  if (!ctx.xxx) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' })
-  }
-
-  return opts.next({
-    ctx: {
-      ...ctx,
-    },
-  })
-})
-```
+For detailed configuration and usage instructions about the Hono backend, please refer to `hono/README.md`.
