@@ -16,6 +16,24 @@ cp .env.example .env
 
 Then configure the environment variables in `.env` as needed.
 
+## Database Setup
+
+After configuring environment variables, you need to initialize the database by running Prisma migrations:
+
+```sh
+bunx prisma migrate dev
+```
+
+This command will:
+- Create the database if it doesn't exist
+- Apply all pending migrations
+- Generate the Prisma Client
+
+**Note:** If you need to reset the database, you can use:
+```sh
+bunx prisma migrate reset
+```
+
 ## Running
 
 To run:

@@ -16,7 +16,25 @@ cp .env.example .env
 
 Then configure the environment variables in the `.env` file as needed (including `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`, etc.).
 
-### 2. Start Hono Backend Service
+### 2. Initialize Prisma Database
+
+Run Prisma migrations to set up the database schema:
+
+```sh
+bunx prisma migrate dev
+```
+
+This command will:
+- Create the database if it doesn't exist
+- Apply all pending migrations
+- Generate the Prisma Client
+
+**Note:** If you need to reset the database, you can use:
+```sh
+bunx prisma migrate reset
+```
+
+### 3. Start Hono Backend Service
 
 Run in the `hono` directory:
 
@@ -26,7 +44,7 @@ bun run dev
 
 The backend service runs on `http://localhost:3000` by default (modify according to your actual setup).
 
-### 3. Install Electron App Dependencies
+### 4. Install Electron App Dependencies
 
 Run in the project root directory:
 
@@ -34,7 +52,7 @@ Run in the project root directory:
 bun install
 ```
 
-### 4. Run Electron App
+### 5. Run Electron App
 
 #### Development Mode
 
