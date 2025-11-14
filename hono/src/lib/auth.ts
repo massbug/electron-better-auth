@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { openAPI } from 'better-auth/plugins'
-import { PROTOCOL } from '../constants/protocol'
+import { PROTOCOL } from '../constants'
 // If your Prisma file is located elsewhere, you can change the path
 import { PrismaClient } from '../generated/prisma/client'
 
@@ -11,7 +11,7 @@ export const auth = betterAuth({
     provider: 'sqlite', // or "mysql", "postgresql", ...etc
   }),
   trustedOrigins: [
-    'http://localhost:5173',
+    'http://localhost:*',
     `${PROTOCOL}://`,
   ],
   socialProviders: {

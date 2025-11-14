@@ -5,7 +5,7 @@ import { useSubscription } from '@trpc/tanstack-react-query'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { PROTOCOL } from '@/constants/protocol'
+import { HONO_URL, PROTOCOL } from '@/constants'
 import { authClient } from '@/lib/auth-client'
 import { trpc } from '@/lib/trpc'
 
@@ -23,7 +23,7 @@ function App() {
 
         if (code && state) {
           const response = await fetch(
-            `http://localhost:3000/api/auth/callback/github?code=${code}&state=${state}`,
+            `${HONO_URL}/api/auth/callback/github?code=${code}&state=${state}`,
             { credentials: 'include' },
           )
           await response.text()

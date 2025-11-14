@@ -3,7 +3,7 @@ import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { app, BrowserWindow, net, protocol } from 'electron'
 import { createIPCHandler } from 'electron-trpc-experimental/main'
-import { PROTOCOL } from '../src/constants/protocol'
+import { PROTOCOL } from '../src/constants'
 import { createTRPCContext, protocolUrlEmitter } from './trpc/init'
 import { appRouter } from './trpc/routers/_app'
 
