@@ -13,6 +13,33 @@ function App() {
   const { data: session, isPending, refetch } = authClient.useSession()
   const openExternalMutation = useMutation(trpc.oauth.openExternalUrl.mutationOptions())
 
+  const handleDevelopmentClick = async () => {
+    await authClient.signIn.social({
+      provider: 'github',
+      callbackURL: 'http://localhost:5173',
+    })
+  }
+
+  const handleProductionClick = async () => {
+    try {
+      const response = await authClient.signIn.social({
+        provider: 'github',
+        callbackURL: `${PROTOCOL}://index.html`,
+        disableRedirect: true,
+      })
+
+      if (response.data?.url) {
+        await openExternalMutation.mutateAsync({ url: response.data.url })
+      }
+      else if (response.error) {
+        console.error('Login failed:', response.error)
+      }
+    }
+    catch (error) {
+      console.error('Error during login:', error)
+    }
+  }
+
   useSubscription(trpc.oauth.onProtocolUrl.subscriptionOptions(undefined, {
     onData: async (url: string) => {
       console.warn('Received protocol URL:', url)
@@ -84,25 +111,7 @@ function App() {
   return (
     <div className="h-screen flex items-center justify-center">
       <Button
-        onClick={async () => {
-          try {
-            const response = await authClient.signIn.social({
-              provider: 'github',
-              callbackURL: `${PROTOCOL}://index.html`,
-              disableRedirect: true,
-            })
-
-            if (response.data?.url) {
-              await openExternalMutation.mutateAsync({ url: response.data.url })
-            }
-            else if (response.error) {
-              console.error('Login failed:', response.error)
-            }
-          }
-          catch (error) {
-            console.error('Error during login:', error)
-          }
-        }}
+        onClick={process.env.NODE_ENV === 'production' ? handleProductionClick : handleDevelopmentClick}
         className="px-8 py-4"
       >
         Login with GitHub
