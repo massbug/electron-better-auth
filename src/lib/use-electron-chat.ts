@@ -3,27 +3,22 @@ import type { ChatInit } from 'ai'
 import {
   useChat as useChatSDK,
 } from '@ai-sdk/react'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { ElectronChatTransport } from './electron-chat-transport'
 
 type ElectronChatOptions<TMessage extends UIMessage = UIMessage> = Omit<ChatInit<TMessage>, 'transport'>
   & Pick<UseChatOptions<TMessage>, 'experimental_throttle' | 'resume'>
 
 // This is a wrapper around the AI SDK's useChat hook
-// It implements model switching and uses the electron chat transport,
+// It implements model switching and uses the custom chat transport,
 // making a nice reusable hook for chat functionality.
 export function useChat<TMessage extends UIMessage = UIMessage>(modelId: string, options?: ElectronChatOptions<TMessage>) {
-  const transportRef = useRef<ElectronChatTransport | null>(null)
+  const transportRef = useRef<ElectronChatTransport | null>(null) // Using a ref here so we can update the model used in the transport without having to reload the page or recreate the transport
 
-  // Create transport using useMemo to avoid recreating on every render
-  const transport = useMemo(() => {
-    return new ElectronChatTransport(modelId)
-  }, [modelId])
-
-  // Store the transport in ref for model updates
-  useEffect(() => {
-    transportRef.current = transport
-  }, [transport])
+  // eslint-disable-next-line react-hooks/refs
+  if (!transportRef.current) {
+    transportRef.current = new ElectronChatTransport(modelId)
+  }
 
   useEffect(() => {
     if (transportRef.current) {
@@ -32,7 +27,8 @@ export function useChat<TMessage extends UIMessage = UIMessage>(modelId: string,
   }, [modelId])
 
   const chatResult = useChatSDK({
-    transport,
+    // eslint-disable-next-line react-hooks/refs
+    transport: transportRef.current,
     ...options,
   })
 
