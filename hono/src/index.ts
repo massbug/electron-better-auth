@@ -14,25 +14,49 @@ interface ContextWithPrisma {
 
 const app = new Hono<ContextWithPrisma>()
 
-app.use(
-  '/api/auth/*',
-  cors({
-    origin: (origin) => {
-      if (origin.startsWith(`${PROTOCOL}://`) || origin.startsWith('http://localhost')) {
-        return origin
-      }
-      return null
-    },
-    allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'OPTIONS'],
-    exposeHeaders: ['Content-Length'],
-    maxAge: 600,
-    credentials: true,
-  }),
-)
+const corsConfig = cors({
+  origin: (origin) => {
+    if (origin.startsWith(`${PROTOCOL}://`) || origin.startsWith('http://localhost')) {
+      return origin
+    }
+    return null
+  },
+  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['POST', 'GET', 'OPTIONS'],
+  exposeHeaders: ['Content-Length'],
+  maxAge: 600,
+  credentials: true,
+})
+
+app.use('/api/auth/*', corsConfig)
+app.use('/v1/chat/completions', corsConfig)
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')
+})
+
+const CHAT_API_KEY = process.env.CHAT_API_KEY
+const CHAT_BASE_URL = process.env.CHAT_BASE_URL
+
+app.post('/v1/chat/completions', async (c) => {
+  const body = await c.req.json()
+
+  const response = await fetch(`${CHAT_BASE_URL}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${CHAT_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+
+  return new Response(response.body, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  })
 })
 
 app.get('/docs', Scalar({
