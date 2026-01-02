@@ -104,6 +104,7 @@ export function ChatSection() {
       {
         text: message.text || 'Sent with attachments',
         files: message.files,
+        metadata: { createdAt: Date.now() },
       },
     )
     setInput('')

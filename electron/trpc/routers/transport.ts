@@ -24,6 +24,14 @@ export const transportRouter = createTRPCRouter({
     })
 
     const stream = result.toUIMessageStream({
+      originalMessages: input.messages,
+      messageMetadata: ({ part }) => {
+        if (part.type === 'start') {
+          return {
+            createdAt: Date.now(),
+          }
+        }
+      },
       onError: (error) => {
         // Note: By default, the AI SDK will return "An error occurred",
         // which is intentionally vague in case the error contains sensitive information like API keys.

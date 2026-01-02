@@ -2,6 +2,12 @@ import type { InferUITools, ToolSet, UIDataTypes, UIMessage } from 'ai'
 import { tool } from 'ai'
 import z from 'zod'
 
+export const messageMetadataSchema = z.object({
+  createdAt: z.number(),
+})
+
+export type MessageMetadata = z.infer<typeof messageMetadataSchema>
+
 const serverTools = {
   getTemperature: tool({
     description: 'Get the current temperature for a location (fahrenheit)',
@@ -59,4 +65,4 @@ export const tools = {
 
 export type MyTools = InferUITools<typeof tools>
 
-export type MyMessage = UIMessage<never, UIDataTypes, MyTools>
+export type MyMessage = UIMessage<MessageMetadata, UIDataTypes, MyTools>
