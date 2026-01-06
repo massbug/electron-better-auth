@@ -19,7 +19,7 @@ interface FileTreeProps {
   tree: TreeNode[]
   label?: string
   selectedFileId?: string
-  onSelectFile: (id: string) => void
+  onSelectFile?: (id: string) => void
 }
 
 export function FileTree({ tree, label = 'Files', selectedFileId, onSelectFile }: FileTreeProps) {
@@ -40,7 +40,7 @@ export function FileTree({ tree, label = 'Files', selectedFileId, onSelectFile }
 interface FileTreeItemProps {
   item: TreeNode
   selectedFileId?: string
-  onSelect: (id: string) => void
+  onSelect?: (id: string) => void
 }
 
 function FileTreeItem({ item, selectedFileId, onSelect }: FileTreeItemProps) {
@@ -48,7 +48,7 @@ function FileTreeItem({ item, selectedFileId, onSelect }: FileTreeItemProps) {
     return (
       <SidebarMenuButton
         isActive={item.id === selectedFileId}
-        onClick={() => onSelect(item.id)}
+        onClick={() => onSelect?.(item.id)}
       >
         <File />
         {item.fileName}

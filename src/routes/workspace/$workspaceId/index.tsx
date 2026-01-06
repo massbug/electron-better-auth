@@ -1,45 +1,28 @@
-import type { FileNode, StoredNode } from '@/collections/workspace'
-import { Editor } from '@monaco-editor/react'
+import type { LucideIcon } from 'lucide-react'
 import { createFileRoute } from '@tanstack/react-router'
-import { getMonacoLanguage } from '@/collections/workspace'
-import { useFile } from '@/hooks/use-file-tree-queries'
-import { useMonacoEditorStore } from '@/stores/monaco-editor-store'
+import { FlexLayout } from '@/components/flexlayout'
+import { useWorkspaceFlexLayoutStore } from '@/hooks/use-workspace-flexlayout-store'
 
 export const Route = createFileRoute('/workspace/$workspaceId/')({
   component: RouteComponent,
 })
 
-function isFileNode(node: StoredNode): node is FileNode {
-  return node.type === 'file'
-}
-
 function RouteComponent() {
-  const { workspaceId } = Route.useParams()
-  const { data: file } = useFile(workspaceId)
-  const { setEditor } = useMonacoEditorStore()
-  const fileNode = file && isFileNode(file) ? file : undefined
+  const { jsonModel, realtimeResize, setJsonModel } = useWorkspaceFlexLayoutStore()
 
-  if (!fileNode)
-    return null
+  const icons: Record<string, LucideIcon> = {
+  }
 
-  const language = getMonacoLanguage(fileNode.fileName)
+  const components: Record<string, React.ReactNode> = {
+  }
 
   return (
-    <Editor
-      theme="vs-dark"
-      language={language}
-      value={fileNode.content}
-      onMount={(editor) => {
-        setEditor(editor)
-      }}
-      options={{
-        padding: {
-          top: 16,
-        },
-        minimap: {
-          enabled: false,
-        },
-      }}
+    <FlexLayout
+      icons={icons}
+      components={components}
+      jsonModel={jsonModel}
+      setJsonModel={setJsonModel}
+      realtimeResize={realtimeResize}
     />
   )
 }

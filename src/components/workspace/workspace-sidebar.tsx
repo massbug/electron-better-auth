@@ -4,14 +4,10 @@ import {
   SidebarContent,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { useFileActions } from '@/hooks/use-file-tree-actions'
 import { useFileTree } from '@/hooks/use-file-tree-queries'
 import { FileTree } from './file-tree'
 
-export function WorkspaceSidebar({ fileId, ...props }: React.ComponentProps<typeof Sidebar> & {
-  fileId?: string
-}) {
-  const { navigateToFile } = useFileActions()
+export function WorkspaceSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: fileTree, rootName } = useFileTree()
 
   return (
@@ -20,8 +16,6 @@ export function WorkspaceSidebar({ fileId, ...props }: React.ComponentProps<type
         <FileTree
           tree={fileTree}
           label={rootName}
-          selectedFileId={fileId}
-          onSelectFile={navigateToFile}
         />
       </SidebarContent>
       <SidebarRail />
