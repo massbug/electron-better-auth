@@ -17,14 +17,15 @@ import {
 
 interface FileTreeProps {
   tree: TreeNode[]
+  label?: string
   selectedFileId?: string
   onSelectFile: (id: string) => void
 }
 
-export function FileTree({ tree, selectedFileId, onSelectFile }: FileTreeProps) {
+export function FileTree({ tree, label = 'Files', selectedFileId, onSelectFile }: FileTreeProps) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Files</SidebarGroupLabel>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {tree.map(item => (

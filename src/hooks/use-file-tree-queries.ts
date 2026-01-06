@@ -1,6 +1,6 @@
 import type { FileTreeNode, FolderTreeNode, TreeNode } from '@/collections/workspace'
 import { and, eq, useLiveQuery } from '@tanstack/react-db'
-import { fileTreeCollection } from '@/collections/workspace'
+import { fileTreeCollection, getWorkspaceTreeForDisplay } from '@/collections/workspace'
 
 // 获取根节点
 export function useRootNodes() {
@@ -32,7 +32,7 @@ export function useFile(fileId: string) {
   )
 }
 
-// 获取完整树形结构(用于渲染)
+// 获取完整树形结构(用于渲染) - 已修改，过滤掉根节点
 export function useFileTree() {
   const { data: allNodes } = useLiveQuery(q =>
     q.from({ node: fileTreeCollection }),
@@ -53,5 +53,11 @@ export function useFileTree() {
       })
   }
 
-  return { data: buildTree() }
+  const tree = buildTree()
+  const displayData = getWorkspaceTreeForDisplay(tree)
+
+  return {
+    data: displayData.children,
+    rootName: displayData.rootName,
+  }
 }

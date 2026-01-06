@@ -12,12 +12,17 @@ export function WorkspaceSidebar({ fileId, ...props }: React.ComponentProps<type
   fileId?: string
 }) {
   const { navigateToFile } = useFileActions()
-  const { data: fileTree } = useFileTree()
+  const { data: fileTree, rootName } = useFileTree()
 
   return (
     <Sidebar {...props}>
       <SidebarContent>
-        <FileTree tree={fileTree} selectedFileId={fileId} onSelectFile={navigateToFile} />
+        <FileTree
+          tree={fileTree}
+          label={rootName}
+          selectedFileId={fileId}
+          onSelectFile={navigateToFile}
+        />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

@@ -1,6 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { seedFileTree } from '@/collections/workspace'
 
 export const Route = createFileRoute('/workspace/')({
+  loader: async () => {
+    await seedFileTree()
+    throw redirect({
+      to: '/workspace/$workspaceId',
+      params: { workspaceId: 'workspace-default' },
+    })
+  },
   component: RouteComponent,
 })
 

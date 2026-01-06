@@ -8,7 +8,11 @@ export { fileTreeCollection, workspaceCollection } from './collections'
 export { isFile, isFolder, isRegularFolder, isRootFolder } from './guards'
 
 // Queries
-export { getWorkspaceNodes, getWorkspaceRoot } from './queries'
+export {
+  getWorkspaceNodes,
+  getWorkspaceRoot,
+  getWorkspaceTreeForDisplay,
+} from './queries'
 
 // Seed
 export { seedFileTree } from './seed'
