@@ -3,13 +3,7 @@
 import type { ComponentProps, HTMLAttributes } from 'react'
 import type { BundledLanguage, ShikiTransformer } from 'shiki'
 import { CheckIcon, CopyIcon } from 'lucide-react'
-import {
-
-  createContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { createContext, use, useEffect, useRef, useState } from 'react'
 import { codeToHtml } from 'shiki'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'

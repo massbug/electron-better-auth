@@ -1061,10 +1061,8 @@ export function PromptInputSubmit({
     Icon = <XIcon className="size-4" />
   }
 
-  const isStreaming = status === 'streaming' || status === 'submitted'
-
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (isStreaming && onStop) {
+    if (status === 'streaming' && onStop) {
       e.preventDefault()
       onStop()
     }
@@ -1076,10 +1074,16 @@ export function PromptInputSubmit({
 
   return (
     <InputGroupButton
-      aria-label={isStreaming ? 'Stop' : 'Submit'}
+      aria-label={
+        status === 'streaming'
+          ? 'Stop'
+          : status === 'error'
+            ? 'Regenerate'
+            : 'Submit'
+      }
       className={cn(className)}
       size={size}
-      type={isStreaming ? 'button' : 'submit'}
+      type={status === 'streaming' || status === 'error' ? 'button' : 'submit'}
       variant={variant}
       onClick={handleClick}
       {...props}

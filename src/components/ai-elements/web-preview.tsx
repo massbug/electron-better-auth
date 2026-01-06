@@ -2,7 +2,7 @@
 
 import type { ComponentProps, ReactNode } from 'react'
 import { ChevronDownIcon } from 'lucide-react'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, use, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Collapsible,

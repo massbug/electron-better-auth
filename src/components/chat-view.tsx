@@ -21,7 +21,7 @@ export function ChatView() {
   const [input, setInput] = useState('')
   const [model, setModel] = useState<string>(models[0].value)
 
-  const { messages, sendMessage, status, regenerate, addToolOutput } = useChat<MonacoMessage>(model, {
+  const { messages, sendMessage, status, stop, regenerate, addToolOutput } = useChat<MonacoMessage>(model, {
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall: ({ toolCall }) => {
       if (toolCall.dynamic) {

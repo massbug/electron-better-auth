@@ -3,20 +3,9 @@
 import type { ComponentProps } from 'react'
 import type { CarouselApi } from '@/components/ui/carousel'
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
-import {
-
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import {
-  Carousel,
-
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import {
   HoverCard,
   HoverCardContent,
