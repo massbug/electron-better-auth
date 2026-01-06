@@ -1,4 +1,4 @@
-import type { MyMessage } from 'electron/tools'
+import type { MonacoMessage } from 'electron/ai/tools/monaco/definitions'
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input'
 import { useNavigate } from '@tanstack/react-router'
 import { chatCollection } from '@/lib/chat-collection'
@@ -37,7 +37,7 @@ export function useChatActions(currentChatId?: string) {
     navigateToChat(newChat.id, query)
   }
 
-  const updateChat = async (chatId: string, messages: MyMessage[]) => {
+  const updateChat = async (chatId: string, messages: MonacoMessage[]) => {
     const tx = chatCollection.update(chatId, (draft) => {
       draft.messages = messages
       draft.updatedAt = new Date()

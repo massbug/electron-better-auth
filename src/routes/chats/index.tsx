@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ChatSection } from '@/components/chat-section'
+import { ChatView } from '@/components/chat-view'
 import { useChatActions } from '@/hooks/use-chat-actions'
 
 export const Route = createFileRoute('/chats/')({
@@ -9,5 +9,5 @@ export const Route = createFileRoute('/chats/')({
 function RouteComponent() {
   const { createChat } = useChatActions()
 
-  return <ChatSection onCreate={createChat} />
+  return <ChatView onCreate={createChat} />
 }

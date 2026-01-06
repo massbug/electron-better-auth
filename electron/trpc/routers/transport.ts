@@ -1,7 +1,7 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { convertToModelMessages, stepCountIs, streamText } from 'ai'
 import z from 'zod'
-import { tools } from '../../tools'
+import { monacoTools } from '../../ai/tools/monaco/definitions'
 import { baseProcedure, createTRPCRouter } from '../init'
 
 export const transportRouter = createTRPCRouter({
@@ -20,7 +20,7 @@ export const transportRouter = createTRPCRouter({
       abortSignal: signal,
       stopWhen: stepCountIs(1000),
       toolChoice: 'auto',
-      tools,
+      tools: monacoTools,
     })
 
     const stream = result.toUIMessageStream({

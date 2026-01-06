@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import z from 'zod'
-import { ChatSection } from '@/components/chat-section'
+import { ChatView } from '@/components/chat-view'
 import { useChatActions } from '@/hooks/use-chat-actions'
 import { useChat } from '@/hooks/use-chat-queries'
 
@@ -28,7 +28,7 @@ function RouteComponent() {
   }
 
   return (
-    <ChatSection
+    <ChatView
       chatId={chatId}
       initialMessages={chat.messages}
       query={search.query}

@@ -1,10 +1,10 @@
-import type { MyMessage } from 'electron/tools'
+import type { MonacoMessage } from 'electron/ai/tools/monaco/definitions'
 import { createCollection, localStorageCollectionOptions } from '@tanstack/react-db'
 
 export interface Chat {
   id: string
   title: string
-  messages: MyMessage[]
+  messages: MonacoMessage[]
   createdAt: Date
   updatedAt: Date
 }

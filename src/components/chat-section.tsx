@@ -1,9 +1,8 @@
-import type { MyMessage } from 'electron/tools'
-import type { PromptInputMessage } from '@/components/ai-elements/prompt-input'
-import { useNavigate } from '@tanstack/react-router'
-import { lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
+import type { UIMessage } from 'ai'
+import type {
+  PromptInputMessage,
+} from '@/components/ai-elements/prompt-input'
 import { CopyIcon, RefreshCcwIcon } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
 import {
   Conversation,
   ConversationContent,
@@ -48,115 +47,42 @@ import {
   SourcesContent,
   SourcesTrigger,
 } from '@/components/ai-elements/sources'
-import { useChat } from '@/lib/use-electron-chat'
-import { useTheme } from './theme-provider'
 
-const models = [
-  {
-    name: 'DeepSeek V3.2',
-    value: 'DeepSeek-V3.2',
-  },
-  {
-    name: 'Qwen3',
-    value: 'Qwen3-235B-A22B',
-  },
-]
-
-interface ChatSectionProps {
-  chatId?: string
-  initialMessages?: MyMessage[]
-  query?: PromptInputMessage
-  onCreate?: (query: PromptInputMessage) => void
-  onUpdate?: (chatId: string, messages: MyMessage[]) => void
+interface ChatSectionProps<TMessage extends UIMessage> {
+  input: string
+  setInput: (value: string) => void
+  messages: TMessage[]
+  status: 'submitted' | 'streaming' | 'ready' | 'error'
+  stop: () => void
+  regenerate: () => void
+  handleSubmit: (message: PromptInputMessage) => void
+  model: string
+  setModel: (model: string) => void
+  models: { name: string, value: string }[]
 }
 
-export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate }: ChatSectionProps) {
-  const navigate = useNavigate()
-  const [input, setInput] = useState('')
-  const { theme, setTheme } = useTheme()
-  const [model, setModel] = useState<string>(models[0].value)
-
-  const hasInitializedRef = useRef<boolean>(false)
-
-  const { messages, sendMessage, status, regenerate, addToolOutput } = useChat<MyMessage>(model, {
-    id: chatId,
-    messages: initialMessages,
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    onToolCall: ({ toolCall }) => {
-      if (toolCall.dynamic) {
-        return
-      }
-      switch (toolCall.toolName) {
-        case 'getTheme': {
-          addToolOutput({
-            tool: 'getTheme',
-            toolCallId: toolCall.toolCallId,
-            output: { theme },
-          })
-          break
-        }
-        case 'setTheme': {
-          setTheme(toolCall.input.theme)
-          addToolOutput({
-            tool: 'setTheme',
-            toolCallId: toolCall.toolCallId,
-            output: { success: true, message: `Theme set to ${toolCall.input.theme}` },
-          })
-          break
-        }
-      }
-    },
-    onFinish: ({ messages }) => {
-      if (chatId) {
-        onUpdate?.(chatId, messages)
-      }
-    },
-  })
-
-  const handleSubmit = (message: PromptInputMessage) => {
-    const hasText = Boolean(message.text)
-    const hasAttachments = Boolean(message.files?.length)
-    if (!(hasText || hasAttachments)) {
-      return
-    }
-    setInput('')
-    if (!chatId) {
-      onCreate?.(message)
-    }
-    else {
-      sendMessage(
-        {
-          text: message.text || 'Sent with attachments',
-          files: message.files,
-          metadata: { createdAt: Date.now() },
-        },
-      )
-    }
-  }
-
-  useEffect(() => {
-    if (query && !hasInitializedRef.current) {
-      hasInitializedRef.current = true
-      sendMessage({
-        text: query.text,
-        files: query.files,
-      })
-      navigate({
-        to: '.',
-        search: {},
-        replace: true,
-      })
-    }
-  }, [navigate, query, sendMessage])
-
+export function ChatSection<TMessage extends UIMessage>({
+  input,
+  setInput,
+  messages,
+  status,
+  stop,
+  regenerate,
+  handleSubmit,
+  model,
+  setModel,
+  models,
+}: ChatSectionProps<TMessage>) {
   return (
-    <div className="max-w-4xl mx-auto p-6 relative size-full">
+    <div className="max-w-4xl mx-auto p-4 relative size-full">
       <div className="flex flex-col h-full">
         <Conversation className="h-full">
           <ConversationContent>
             {messages.map(message => (
               <div key={message.id}>
-                {message.role === 'assistant' && message.parts.filter(part => part.type === 'source-url').length > 0 && (
+                {message.role === 'assistant'
+                  && message.parts.filter(part => part.type === 'source-url')
+                    .length > 0 && (
                   <Sources>
                     <SourcesTrigger
                       count={
@@ -165,15 +91,17 @@ export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate
                         ).length
                       }
                     />
-                    {message.parts.filter(part => part.type === 'source-url').map((part, i) => (
-                      <SourcesContent key={`${message.id}-${i}`}>
-                        <Source
-                          key={`${message.id}-${i}`}
-                          href={part.url}
-                          title={part.url}
-                        />
-                      </SourcesContent>
-                    ))}
+                    {message.parts
+                      .filter(part => part.type === 'source-url')
+                      .map((part, i) => (
+                        <SourcesContent key={`${message.id}-${i}`}>
+                          <Source
+                            key={`${message.id}-${i}`}
+                            href={part.url}
+                            title={part.url}
+                          />
+                        </SourcesContent>
+                      ))}
                   </Sources>
                 )}
                 {message.parts.map((part, i) => {
@@ -182,11 +110,10 @@ export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate
                       return (
                         <Message key={`${message.id}-${i}`} from={message.role}>
                           <MessageContent>
-                            <MessageResponse>
-                              {part.text}
-                            </MessageResponse>
+                            <MessageResponse>{part.text}</MessageResponse>
                           </MessageContent>
-                          {message.role === 'assistant' && i === messages.length - 1 && (
+                          {message.role === 'assistant'
+                            && i === messages.length - 1 && (
                             <MessageActions>
                               <MessageAction
                                 onClick={() => regenerate()}
@@ -210,7 +137,11 @@ export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate
                         <Reasoning
                           key={`${message.id}-${i}`}
                           className="w-full"
-                          isStreaming={status === 'streaming' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id}
+                          isStreaming={
+                            status === 'streaming'
+                            && i === message.parts.length - 1
+                            && message.id === messages.at(-1)?.id
+                          }
                         >
                           <ReasoningTrigger />
                           <ReasoningContent>{part.text}</ReasoningContent>
@@ -226,7 +157,12 @@ export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
-        <PromptInput onSubmit={handleSubmit} className="mt-4" globalDrop multiple>
+        <PromptInput
+          onSubmit={handleSubmit}
+          className="mt-4"
+          globalDrop
+          multiple
+        >
           <PromptInputHeader>
             <PromptInputAttachments>
               {attachment => <PromptInputAttachment data={attachment} />}
@@ -264,7 +200,12 @@ export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate
                 </PromptInputSelectContent>
               </PromptInputSelect>
             </PromptInputTools>
-            <PromptInputSubmit disabled={!input && !status} status={status} />
+            <PromptInputSubmit
+              disabled={!input && !status}
+              status={status}
+              onStop={stop}
+              regenerate={regenerate}
+            />
           </PromptInputFooter>
         </PromptInput>
       </div>
