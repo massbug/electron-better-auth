@@ -1,8 +1,9 @@
 import type { MyMessage } from 'electron/tools'
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input'
+import { useNavigate } from '@tanstack/react-router'
 import { lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
 import { CopyIcon, RefreshCcwIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Conversation,
   ConversationContent,
@@ -61,12 +62,25 @@ const models = [
   },
 ]
 
-export function ChatSection() {
+interface ChatSectionProps {
+  chatId?: string
+  initialMessages?: MyMessage[]
+  query?: PromptInputMessage
+  onCreate?: (query: PromptInputMessage) => void
+  onUpdate?: (chatId: string, messages: MyMessage[]) => void
+}
+
+export function ChatSection({ chatId, initialMessages, query, onCreate, onUpdate }: ChatSectionProps) {
+  const navigate = useNavigate()
   const [input, setInput] = useState('')
   const { theme, setTheme } = useTheme()
   const [model, setModel] = useState<string>(models[0].value)
 
+  const hasInitializedRef = useRef<boolean>(false)
+
   const { messages, sendMessage, status, regenerate, addToolOutput } = useChat<MyMessage>(model, {
+    id: chatId,
+    messages: initialMessages,
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall: ({ toolCall }) => {
       if (toolCall.dynamic) {
@@ -92,6 +106,11 @@ export function ChatSection() {
         }
       }
     },
+    onFinish: ({ messages }) => {
+      if (chatId) {
+        onUpdate?.(chatId, messages)
+      }
+    },
   })
 
   const handleSubmit = (message: PromptInputMessage) => {
@@ -100,18 +119,38 @@ export function ChatSection() {
     if (!(hasText || hasAttachments)) {
       return
     }
-    sendMessage(
-      {
-        text: message.text || 'Sent with attachments',
-        files: message.files,
-        metadata: { createdAt: Date.now() },
-      },
-    )
     setInput('')
+    if (!chatId) {
+      onCreate?.(message)
+    }
+    else {
+      sendMessage(
+        {
+          text: message.text || 'Sent with attachments',
+          files: message.files,
+          metadata: { createdAt: Date.now() },
+        },
+      )
+    }
   }
 
+  useEffect(() => {
+    if (query && !hasInitializedRef.current) {
+      hasInitializedRef.current = true
+      sendMessage({
+        text: query.text,
+        files: query.files,
+      })
+      navigate({
+        to: '.',
+        search: {},
+        replace: true,
+      })
+    }
+  }, [navigate, query, sendMessage])
+
   return (
-    <div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
+    <div className="max-w-4xl mx-auto p-6 relative size-full">
       <div className="flex flex-col h-full">
         <Conversation className="h-full">
           <ConversationContent>
