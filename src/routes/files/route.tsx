@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet, useParams } from '@tanstack/react-router'
-import { ChatView } from '@/components/chat-view'
 import { FileSidebar } from '@/components/files/file-tree-sidebar'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
@@ -19,12 +18,7 @@ function RouteComponent() {
           <SidebarTrigger className="-ml-1" />
         </header>
         <div className="flex flex-1 min-h-0">
-          <div className="flex-1 overflow-auto">
-            <Outlet />
-          </div>
-          <div className="flex-1 overflow-auto">
-            <ChatView />
-          </div>
+          <Outlet />
         </div>
       </SidebarInset>
     </SidebarProvider>
