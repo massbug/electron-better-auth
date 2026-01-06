@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useFileActions } from '@/hooks/use-file-tree-actions'
 import { useFileTree } from '@/hooks/use-file-tree-queries'
-import { seedFileTree } from '@/lib/file-tree-collection'
+import { seedFileTree } from '@/collections/workspace'
 import { FileTree } from './file-tree'
 import { SeedButton } from './seed-button'
 

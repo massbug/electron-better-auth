@@ -1,4 +1,4 @@
-import type { Chat } from '@/lib/chat-collection'
+import type { Chat } from '@/collections/chat'
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu } from '@/components/ui/sidebar'
 import { ChatListItem } from './chat-list-item'
 

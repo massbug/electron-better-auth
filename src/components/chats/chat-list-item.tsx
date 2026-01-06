@@ -1,4 +1,4 @@
-import type { Chat } from '@/lib/chat-collection'
+import type { Chat } from '@/collections/chat'
 import { MoreHorizontalIcon, Trash2Icon } from 'lucide-react'
 import {
   DropdownMenu,

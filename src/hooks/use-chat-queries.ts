@@ -1,5 +1,5 @@
 import { eq, useLiveQuery } from '@tanstack/react-db'
-import { chatCollection } from '@/lib/chat-collection'
+import { chatCollection } from '@/collections/chat'
 
 export function useChatList() {
   return useLiveQuery(q =>

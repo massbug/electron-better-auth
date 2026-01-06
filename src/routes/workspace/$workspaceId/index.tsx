@@ -1,8 +1,8 @@
-import type { FileNode, StoredNode } from '@/lib/file-tree-collection'
+import type { FileNode, StoredNode } from '@/collections/workspace'
 import { Editor } from '@monaco-editor/react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useFile } from '@/hooks/use-file-tree-queries'
-import { getMonacoLanguage } from '@/lib/file-tree-collection'
+import { getMonacoLanguage } from '@/collections/workspace'
 import { useMonacoEditorStore } from '@/stores/monaco-editor-store'
 
 export const Route = createFileRoute('/workspace/$workspaceId/')({

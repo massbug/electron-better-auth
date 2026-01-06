@@ -1,6 +1,6 @@
-import type { FileTreeNode, FolderTreeNode, TreeNode } from '@/lib/file-tree-collection'
+import type { FileTreeNode, FolderTreeNode, TreeNode } from '@/collections/workspace'
 import { and, eq, useLiveQuery } from '@tanstack/react-db'
-import { fileTreeCollection } from '@/lib/file-tree-collection'
+import { fileTreeCollection } from '@/collections/workspace'
 
 // 获取根节点
 export function useRootNodes() {

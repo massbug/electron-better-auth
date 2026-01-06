@@ -1,4 +1,4 @@
-import type { TreeNode } from '@/lib/file-tree-collection'
+import type { TreeNode } from '@/collections/workspace'
 import { ChevronRight, File, Folder } from 'lucide-react'
 import {
   Collapsible,

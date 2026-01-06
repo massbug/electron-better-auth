@@ -1,7 +1,7 @@
 import type { MonacoMessage } from 'electron/ai/tools/monaco/definitions'
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input'
 import { useNavigate } from '@tanstack/react-router'
-import { chatCollection } from '@/lib/chat-collection'
+import { chatCollection } from '@/collections/chat'
 
 export function useChatActions(currentChatId?: string) {
   const navigate = useNavigate()
