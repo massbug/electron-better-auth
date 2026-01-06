@@ -1,15 +1,11 @@
 import type { TreeNode } from '@/lib/file-tree-collection'
-import { ChevronRight, File, Folder, SproutIcon } from 'lucide-react'
-
-import * as React from 'react'
+import { ChevronRight, File, Folder } from 'lucide-react'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 import {
-  Sidebar,
-  SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -17,62 +13,22 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarRail,
 } from '@/components/ui/sidebar'
-import { useFileActions } from '@/hooks/use-file-tree-actions'
-import { useFileTree } from '@/hooks/use-file-tree-queries'
-import { seedFileTree } from '@/lib/file-tree-collection'
 
-interface SeedProps {
-  onSeed: () => void
-}
-
-export function Seed({ onSeed }: SeedProps) {
-  return (
-    <SidebarGroup>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton onClick={() => onSeed()}>
-            <SproutIcon />
-            <span>Seed</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </SidebarGroup>
-  )
-}
-
-export function FileSidebar({ fileId, ...props }: React.ComponentProps<typeof Sidebar> & {
-  fileId?: string
-}) {
-  const { navigateToFile } = useFileActions()
-  const { data: fileTree } = useFileTree()
-
-  return (
-    <Sidebar {...props}>
-      <Seed onSeed={seedFileTree} />
-      <SidebarContent>
-        <TreeList tree={fileTree} selectedFileId={fileId} onSelectFile={navigateToFile} />
-      </SidebarContent>
-      <SidebarRail />
-    </Sidebar>
-  )
-}
-
-interface TreeListProps {
+interface FileTreeProps {
   tree: TreeNode[]
   selectedFileId?: string
   onSelectFile: (id: string) => void
 }
 
-function TreeList({ tree, selectedFileId, onSelectFile }: TreeListProps) {
+export function FileTree({ tree, selectedFileId, onSelectFile }: FileTreeProps) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Files</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {tree.map(item => (
-            <Tree key={item.id} item={item} selectedFileId={selectedFileId} onSelect={onSelectFile} />
+            <FileTreeItem key={item.id} item={item} selectedFileId={selectedFileId} onSelect={onSelectFile} />
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
@@ -80,13 +36,13 @@ function TreeList({ tree, selectedFileId, onSelectFile }: TreeListProps) {
   )
 }
 
-interface TreeProps {
+interface FileTreeItemProps {
   item: TreeNode
   selectedFileId?: string
   onSelect: (id: string) => void
 }
 
-function Tree({ item, selectedFileId, onSelect }: TreeProps) {
+function FileTreeItem({ item, selectedFileId, onSelect }: FileTreeItemProps) {
   if (item.type === 'file') {
     return (
       <SidebarMenuButton
@@ -114,8 +70,8 @@ function Tree({ item, selectedFileId, onSelect }: TreeProps) {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {item.children.map((subItem: TreeNode) => (
-              <Tree key={subItem.id} item={subItem} onSelect={onSelect} selectedFileId={selectedFileId} />
+            {item.children.map((childItem: TreeNode) => (
+              <FileTreeItem key={childItem.id} item={childItem} onSelect={onSelect} selectedFileId={selectedFileId} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>

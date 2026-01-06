@@ -5,7 +5,7 @@ import { useFile } from '@/hooks/use-file-tree-queries'
 import { getMonacoLanguage } from '@/lib/file-tree-collection'
 import { useMonacoEditorStore } from '@/stores/monaco-editor-store'
 
-export const Route = createFileRoute('/files/$fileId')({
+export const Route = createFileRoute('/workspace/$workspaceId/')({
   component: RouteComponent,
 })
 
@@ -14,8 +14,8 @@ function isFileNode(node: StoredNode): node is FileNode {
 }
 
 function RouteComponent() {
-  const { fileId } = Route.useParams()
-  const { data: file } = useFile(fileId)
+  const { workspaceId } = Route.useParams()
+  const { data: file } = useFile(workspaceId)
   const { setEditor } = useMonacoEditorStore()
   const fileNode = file && isFileNode(file) ? file : undefined
 

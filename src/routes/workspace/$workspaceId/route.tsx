@@ -1,18 +1,15 @@
-import { createFileRoute, Outlet, useParams } from '@tanstack/react-router'
-import { FileSidebar } from '@/components/files/file-tree-sidebar'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { WorkspaceSidebar } from '@/components/workspace/workspace-sidebar'
 
-export const Route = createFileRoute('/files')({
+export const Route = createFileRoute('/workspace/$workspaceId')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const params = useParams({ strict: false })
-  const fileId = params.fileId
-
   return (
     <SidebarProvider>
-      <FileSidebar fileId={fileId} />
+      <WorkspaceSidebar />
       <SidebarInset className="h-screen">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
