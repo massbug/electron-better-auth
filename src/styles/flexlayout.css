@@ -293,16 +293,26 @@
 .flexlayout__tab_button_content,
 .flexlayout__tab_button_leading {
   display: flex;
+  margin-right: 8px;
 }
 .flexlayout__tab_button_trailing {
   border-radius: 3px;
   color: var(--color-tab-close-icon);
   display: flex;
   margin-right: 2px;
+  visibility: hidden;
 }
 .flexlayout__tab_button_trailing:hover {
   background-color: var(--color-tab-close-background);
   color: var(--color-tab-close-icon-hover);
+}
+.flexlayout__tab_button--selected .flexlayout__tab_button_trailing {
+  visibility: visible;
+}
+@media (hover: hover) {
+  .flexlayout__tab_button:hover .flexlayout__tab_button_trailing {
+    visibility: visible;
+  }
 }
 .flexlayout__tab_button_overflow,
 .flexlayout__tab_toolbar_button-max,
@@ -325,7 +335,7 @@
   padding-right: 4px;
 }
 .flexlayout__tabset_tabbar_hover_show_toolbar .flexlayout__tab_toolbar {
-  display: none;
+  display: flex;
 }
 .flexlayout__tabset.flexlayout__tab_node_hover .flexlayout__tabset_tabbar_hover_show_toolbar .flexlayout__tab_toolbar,
 .flexlayout__tabset_tabbar_hover_show_toolbar:hover .flexlayout__tab_toolbar {
